@@ -1,11 +1,41 @@
 window.onload= function(){
     //cargarInfo();
-    const data = recuperarInfo();
-    llenarInfo(data);
+    //const data = recuperarInfo();
+    //llenarInfo(data);
+    cargarInfoAsync();
 }
 
 function recuperarInfo() {
     return JSON.parse(localStorage.getItem("matchInfo"));
+}
+
+async function cargarInfoAsync() {
+    try {
+        const query = window.location.search;
+    const urlParams = new URLSearchParams(query);
+
+    const nac = urlParams.get("nac");
+    const genero = urlParams.get("genero");
+
+    const request = new Request(
+        `https://randomuser.me/api/?nat=${nac}&gender=${genero}`,
+        {
+            method: 'get',
+            headers: new Headers({
+                "Content-Type": "application/json"
+            })
+        }
+    );
+
+    const response = await fetch(request);
+    const data = await response.json();
+    llenarInfo(data.results[0]);
+
+
+    } catch(error) {
+        console.log(error);
+        alert("Hubo un error encontrando a tu otra mitad :(");
+    }
 }
 
 function cargarInfo() {
